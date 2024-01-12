@@ -1,0 +1,42 @@
+---> Teaching the machine ----> 
+
+Data Collection and Preprocessing: 
+#TBC 
+
+Represent data relationship: 
+# Do you think it's needed? 
+
+Feature Engineering: 
+#Consider creating additional features that might enhance model performance.
+
+Splitting the Data: 
+#Split the data into training and testing sets.
+
+Selecting a Model: 
+TBC
+
+Model Training:
+#Train the selected model using the training data. 
+
+Model Evaluation:
+#Evaluate the model's performance on the testing set, using appropriate metrics like Mean Squared Error (MSE) or Mean Absolute Error (MAE).
+
+Hyperparameter Tuning:
+#Optimize the model's hyperparameters for better performance.
+
+---> Deploy ----> 
+
+Deployment:
+#Deploy the model using a web framework or cloud services. Flask, Django, or FastAPI can be used for creating a simple API
+#Can deploy the model on cloud platforms like Google Cloud.
+
+---> Showcase --->
+
+Website Integration:
+#Integrate the deployed model into the website by making API calls.
+#Use front-end technologies like HTML, CSS, and JavaScript to create a user interface for interacting with the model
+
+----> Document ---->
+Follow best practices for handling sensitive data and consider the legal and ethical aspects of deploying predictive models
+
+
