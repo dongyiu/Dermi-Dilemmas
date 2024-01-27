@@ -58,6 +58,8 @@
   </template>
   
   <script>
+  import  { SkinCondition, getSkinConditionByIndex }  from '../type/class';
+
   export default {
     data() {
       return {
@@ -68,17 +70,42 @@
       };
     },
     methods: {
-    attachFile() {
-        if (this.uploading) {
-            this.message = "Please wait for the file to finish uploading.";
-            return this.showCustomAlert();
-        }
-        else if (this.uploadedFiles.length === 0) {
-            this.message = "Please upload a file first.";
-            return this.showCustomAlert();
-        }
-        this.$emit("attach", this.uploadedFiles);
-    },
+        attachFile() {
+            if (this.uploading) {
+                this.message = "Please wait for the file to finish uploading.";
+                return this.showCustomAlert();
+            }
+            else if (this.uploadedFiles.length === 0) {
+                this.message = "Please upload a file first.";
+                return this.showCustomAlert();
+            }
+
+            // Prepare form data
+            let formData = new FormData();
+            formData.append('image', this.uploadedFiles[0].raw);
+
+            // AJAX request to backend
+            fetch('http://localhost:5000/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                const condition = getSkinConditionByIndex(data.predicted_class);
+                const confidence = data.confidence;
+                if (condition !== undefined) {
+                console.log('Predicted Skin Condition:', condition);
+                } else {
+                console.error("Received invalid class index from API");
+                }
+                this.$emit("attach", condition, Number(confidence));
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                this.$emit("attach", undefined, undefined);
+            });
+        },
       triggerFileUpload() {
         this.$refs.fileInput.click();
       },
@@ -102,9 +129,10 @@
           } else {
             const fileSizeMB = (newFile.size / 1024 / 1024).toFixed(2);
             const fileWithProgress = {
-              name: newFile.name,
-              size: fileSizeMB,
-              progress: 0
+                name: newFile.name,
+                size: fileSizeMB,
+                progress: 0,
+                raw: newFile // Store the raw file
             };
             this.uploadedFiles.push(fileWithProgress);
             this.simulateUploadProgress(this.uploadedFiles.length - 1);
@@ -122,7 +150,7 @@
             this.uploading = false;
             clearInterval(interval);
           }
-        }, 1000);
+        }, 150);
       },
       removeFileItem(index) {
         this.uploadedFiles.splice(index, 1);

@@ -5,7 +5,8 @@
       <div class="max-w-6xl mx-auto sortable-item">
         <div class="editable text-center text-black-700 py-20 sortable-item" draggable="false">
           <h1 class="editable text-6xl font-bold mb-4 sortable-item" draggable="false">Dermi Dilemmas</h1>
-          <p class="editable text-xl mb-10 sortable-item" draggable="false">Detect skin rashes with AI</p>
+          <p class="editable text-xl mb-5 sortable-item" draggable="false">Detect skin rashes with AI</p>
+          <p class="editable text-sm mb-10 sortable-item" draggable="false">Disclaimer: Please consult a medical professional for a proper diagnosis.</p>
           <button @click="showUploadModal = true" class="editable px-8 rounded-lg bg-yellow-400 text-gray-800 font-bold p-4 uppercase border-yellow-500 border-t border-b border-r sortable-item mt-16 mb-24">Upload Image</button>
         </div>
         
@@ -30,8 +31,9 @@
               <div class="sortable-item">
                 <!-- <p class="text-gray-900 text-sm font-semibold sortable-item">{{ card.name }}</p> -->
                 <!-- <p class="text-gray-600 text-xs sortable-item">{{ card.date }}</p> -->
-                <p class="text-gray-600 text-sm sortable-item">{{ card.description }}</p>
-                <a @click="openModal(card)" class="text-base text-blue-500 hover:text-blue-600 transition-colors sortable-item">Read more</a>
+                <p class="text-gray-600 text-sm sortable-item">
+                  {{ card.description.split(' ').length < 15 ? card.description : card.description.split(' ').slice(0, 15).join(' ') + '...' }}
+                </p>                <a @click="openModal(card)" class="text-base text-blue-500 hover:text-blue-600 transition-colors sortable-item">Read more</a>
 
               </div>
             </div>
@@ -47,6 +49,7 @@
 </template>
 
 <script>
+const THRESHOLD = 0.5; // Threshold for confidence score
 export default {
   data() {
     return {
@@ -68,81 +71,124 @@ export default {
           nhsLink: 'https://www.nhs.uk/' 
       },
       cards: [
-        { 
-          title: 'Abc Dermatology', 
-          image: 'https://source.unsplash.com/random/80x80', 
-          name: 'Dr. Jackson Bennet', 
-          date: 'Apr 25, 2021', 
-          description: 'Specializing in skin care and dermatological treatments.',
-          symptoms: 'Fever, Rash',
-          severity: 'Moderate',
-          seriousness: 'Low',
-          treatment: 'Rest and hydration',
-          nhsLink: 'https://www.nhs.uk/' 
-        },
-        { 
-          title: 'Skin Health Clinic', 
-          image: 'https://source.unsplash.com/random/80x80', 
-          name: 'Dr. Emily Johnson', 
-          date: 'Apr 30, 2021', 
-          description: 'Promoting skin health and well-being.',
-          symptoms: 'Pain, Discomfort',
-          severity: 'Mild',
-          seriousness: 'Low',
-          treatment: 'Pain relievers',
-          nhsLink: 'https://www.nhs.uk/' 
-        },
-        { 
-          title: 'Dermatology Solutions', 
-          image: 'https://source.unsplash.com/random/80x80', 
-          name: 'Dr. Sarah Adams', 
-          date: 'May 15, 2021', 
-          description: 'Committed to providing advanced dermatological care.',
-          symptoms: 'Itching, Redness',
-          severity: 'Severe',
-          seriousness: 'Moderate',
-          treatment: 'Prescription medication',
-          nhsLink: 'https://www.nhs.uk/' 
-        },
-        { 
-          title: 'Skin Care Center', 
-          image: 'https://source.unsplash.com/random/80x80', 
-          name: 'Dr. James Smith', 
-          date: 'Jun 5, 2021', 
-          description: 'Your trusted partner for healthy skin.',
-          symptoms: 'Swelling, Dryness',
-          severity: 'Mild',
-          seriousness: 'Low',
-          treatment: 'Moisturizers and anti-inflammatory creams',
-          nhsLink: 'https://www.nhs.uk/' 
-        },
-        { 
-          title: 'Healthy Skin Clinic', 
-          image: 'https://source.unsplash.com/random/80x80', 
-          name: 'Dr. Laura Wilson', 
-          date: 'Jun 20, 2021', 
-          description: 'Where beautiful skin begins.',
-          symptoms: 'Flaking, Allergic Reaction',
-          severity: 'Moderate',
-          seriousness: 'Moderate',
-          treatment: 'Topical ointments and allergy management',
-          nhsLink: 'https://www.nhs.uk/' 
-        },
-        // Add more card objects here
-      ],
+    { 
+        title: 'Actinic keratosis', 
+        image: 'https://source.unsplash.com/random/80x80', 
+        description: 'Where beautiful skin begins.',
+        symptoms: 'Flaking, Allergic Reaction',
+        severity: 'Moderate',
+        seriousness: 'Moderate',
+        treatment: 'Topical ointments and allergy management',
+        nhsLink: 'https://www.nhs.uk/' 
+    },
+    { 
+        title: 'Atopic Dermatitis', 
+        image: 'https://source.unsplash.com/random/80x80', 
+        description: 'Flaking, Allergic Reaction lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation',
+        symptoms: 'Flaking, Allergic Reaction lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation',
+        severity: 'Flaking, Allergic Reaction lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation',
+        seriousness: 'Flaking, Allergic Reaction lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation',
+        treatment: 'Flaking, Allergic Reaction lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation',
+        nhsLink: 'https://www.nhs.uk/' 
+    },
+    { 
+        title: 'Benign keratosis', 
+        image: 'https://source.unsplash.com/random/80x80', 
+        description: 'Where beautiful skin begins.',
+        symptoms: 'Flaking, Allergic Reaction',
+        severity: 'Moderate',
+        seriousness: 'Moderate',
+        treatment: 'Topical ointments and allergy management',
+        nhsLink: 'https://www.nhs.uk/' 
+    },
+    { 
+        title: 'Dermatofibroma', 
+        image: 'https://source.unsplash.com/random/80x80', 
+        description: 'Where beautiful skin begins.',
+        symptoms: 'Flaking, Allergic Reaction',
+        severity: 'Moderate',
+        seriousness: 'Moderate',
+        treatment: 'Topical ointments and allergy management',
+        nhsLink: 'https://www.nhs.uk/' 
+    },
+    { 
+        title: 'Melanocytic nevus', 
+        image: 'https://source.unsplash.com/random/80x80', 
+        description: 'Where beautiful skin begins.',
+        symptoms: 'Flaking, Allergic Reaction',
+        severity: 'Moderate',
+        seriousness: 'Moderate',
+        treatment: 'Topical ointments and allergy management',
+        nhsLink: 'https://www.nhs.uk/' 
+    },
+    { 
+        title: 'Melanoma', 
+        image: 'https://source.unsplash.com/random/80x80', 
+        description: 'Where beautiful skin begins.',
+        symptoms: 'Flaking, Allergic Reaction',
+        severity: 'Moderate',
+        seriousness: 'Moderate',
+        treatment: 'Topical ointments and allergy management',
+        nhsLink: 'https://www.nhs.uk/' 
+    },
+    { 
+        title: 'Squamous cell carcinoma', 
+        image: 'https://source.unsplash.com/random/80x80', 
+        description: 'Where beautiful skin begins.',
+        symptoms: 'Flaking, Allergic Reaction',
+        severity: 'Moderate',
+        seriousness: 'Moderate',
+        treatment: 'Topical ointments and allergy management',
+        nhsLink: 'https://www.nhs.uk/' 
+    },
+    { 
+        title: 'Tinea Ringworm Candidiasis', 
+        image: 'https://source.unsplash.com/random/80x80', 
+        description: 'Where beautiful skin begins.',
+        symptoms: 'Flaking, Allergic Reaction',
+        severity: 'Moderate',
+        seriousness: 'Moderate',
+        treatment: 'Topical ointments and allergy management',
+        nhsLink: 'https://www.nhs.uk/' 
+    },
+    { 
+        title: 'Vascular lesion', 
+        image: 'https://source.unsplash.com/random/80x80', 
+        description: 'Where beautiful skin begins.',
+        symptoms: 'Flaking, Allergic Reaction',
+        severity: 'Moderate',
+        seriousness: 'Moderate',
+        treatment: 'Topical ointments and allergy management',
+        nhsLink: 'https://www.nhs.uk/' 
+    }
+],
       selectedCardIndex: -1 // Initialize selected card index to -1 (none selected by default)
     };
   },
   methods: {
-    showAttach(files) {
-      this.alertType = 'alert';
+    showAttach(files, confidence) {
+      this.selectedCardIndex = -1;
+      if (files == undefined || isNaN(files) || !Number.isInteger(Number(files))) {
+        this.alertType = 'alert';
+        this.message = "Error uploading file. Please try again."
+      }
+      else if (confidence < THRESHOLD) {
+        this.alertType = 'success';
+        this.message = "No skin condition detected."
+      }
+      else {
+        this.alertType = 'alert';
+        this.message = `Skin condition detected!`;
+        this.selectedCardIndex = Number(files);
+      }
+      
       this.showUploadModal = false;
-      this.message = `You are not healthy!`;
+      // this.message = `You are not healthy!`;
       this.showAlert = true;
         setTimeout(() => {
           this.showAlert = false;
         }, 6000);
-      this.selectedCardIndex = 2;
+      // this.selectedCardIndex = 2;
       // Optionally, scroll to the selected card
       this.scrollToCard(this.selectedCardIndex);
     },
