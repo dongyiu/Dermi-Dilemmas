@@ -93,6 +93,7 @@
         }
         else if (this.uploadedFiles.length + 1 > 1) {
             this.showCustomAlert();
+            return;
         }
   
         newFiles.forEach(newFile => {

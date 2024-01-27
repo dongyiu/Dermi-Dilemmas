@@ -28,18 +28,19 @@
             <div class="flex items-center space-x-4 mb-6 sortable-item">
               <img :src="card.image" alt="profile" class="rounded-full sortable-item" draggable="false">
               <div class="sortable-item">
-                <p class="text-gray-900 text-sm font-semibold sortable-item">{{ card.name }}</p>
-                <p class="text-gray-600 text-xs sortable-item">{{ card.date }}</p>
-                <p class="text-gray-600 text-xs sortable-item">{{ card.description }}</p>
+                <!-- <p class="text-gray-900 text-sm font-semibold sortable-item">{{ card.name }}</p> -->
+                <!-- <p class="text-gray-600 text-xs sortable-item">{{ card.date }}</p> -->
+                <p class="text-gray-600 text-sm sortable-item">{{ card.description }}</p>
+                <a @click="openModal(card)" class="text-base text-blue-500 hover:text-blue-600 transition-colors sortable-item">Read more</a>
+
               </div>
             </div>
-            <a class="text-blue-500 hover:text-blue-600 transition-colors sortable-item">Read more</a>
           </div>
         </div>
       </div>
     </main>
     <Alert :show="showAlert" :message="message" :type="alertType" />
-
+    <Modal v-if="showModal" :modalData="modalData" @close="closeModal" />
     <!-- Upload Modal -->
     <upload v-if="showUploadModal" @close="showUploadModal = false" @attach="showAttach"/>
   </div>
@@ -53,12 +54,80 @@ export default {
       showUploadModal: false,
       showAlert: false,
       message: '',
+      showModal: false,
+      modalData: {
+          title: 'Abc Dermatology', 
+          image: 'https://source.unsplash.com/random/80x80', 
+          name: 'Dr. Jackson Bennet', 
+          date: 'Apr 25, 2021', 
+          description: 'Specializing in skin care and dermatological treatments.',
+          symptoms: 'Fever, Rash',
+          severity: 'Moderate',
+          seriousness: 'Low',
+          treatment: 'Rest and hydration',
+          nhsLink: 'https://www.nhs.uk/' 
+      },
       cards: [
-        { title: 'Abc', image: 'https://source.unsplash.com/random/80x80', name: 'Jackson Bennet', date: 'Apr 25, 2021', description: 'Great place would highly recommend for anyone wanting high value.' },
-        { title: 'Abc', image: 'https://source.unsplash.com/random/80x80', name: 'Jackson Bennet', date: 'Apr 25, 2021', description: 'Great place would highly recommend for anyone wanting high value.' },
-        { title: 'Abc', image: 'https://source.unsplash.com/random/80x80', name: 'Jackson Bennet', date: 'Apr 25, 2021', description: 'Great place would highly recommend for anyone wanting high value.' },
-        { title: 'Abc', image: 'https://source.unsplash.com/random/80x80', name: 'Jackson Bennet', date: 'Apr 25, 2021', description: 'Great place would highly recommend for anyone wanting high value.' },
-        { title: 'Abc', image: 'https://source.unsplash.com/random/80x80', name: 'Jackson Bennet', date: 'Apr 25, 2021', description: 'Great place would highly recommend for anyone wanting high value.' },
+        { 
+          title: 'Abc Dermatology', 
+          image: 'https://source.unsplash.com/random/80x80', 
+          name: 'Dr. Jackson Bennet', 
+          date: 'Apr 25, 2021', 
+          description: 'Specializing in skin care and dermatological treatments.',
+          symptoms: 'Fever, Rash',
+          severity: 'Moderate',
+          seriousness: 'Low',
+          treatment: 'Rest and hydration',
+          nhsLink: 'https://www.nhs.uk/' 
+        },
+        { 
+          title: 'Skin Health Clinic', 
+          image: 'https://source.unsplash.com/random/80x80', 
+          name: 'Dr. Emily Johnson', 
+          date: 'Apr 30, 2021', 
+          description: 'Promoting skin health and well-being.',
+          symptoms: 'Pain, Discomfort',
+          severity: 'Mild',
+          seriousness: 'Low',
+          treatment: 'Pain relievers',
+          nhsLink: 'https://www.nhs.uk/' 
+        },
+        { 
+          title: 'Dermatology Solutions', 
+          image: 'https://source.unsplash.com/random/80x80', 
+          name: 'Dr. Sarah Adams', 
+          date: 'May 15, 2021', 
+          description: 'Committed to providing advanced dermatological care.',
+          symptoms: 'Itching, Redness',
+          severity: 'Severe',
+          seriousness: 'Moderate',
+          treatment: 'Prescription medication',
+          nhsLink: 'https://www.nhs.uk/' 
+        },
+        { 
+          title: 'Skin Care Center', 
+          image: 'https://source.unsplash.com/random/80x80', 
+          name: 'Dr. James Smith', 
+          date: 'Jun 5, 2021', 
+          description: 'Your trusted partner for healthy skin.',
+          symptoms: 'Swelling, Dryness',
+          severity: 'Mild',
+          seriousness: 'Low',
+          treatment: 'Moisturizers and anti-inflammatory creams',
+          nhsLink: 'https://www.nhs.uk/' 
+        },
+        { 
+          title: 'Healthy Skin Clinic', 
+          image: 'https://source.unsplash.com/random/80x80', 
+          name: 'Dr. Laura Wilson', 
+          date: 'Jun 20, 2021', 
+          description: 'Where beautiful skin begins.',
+          symptoms: 'Flaking, Allergic Reaction',
+          severity: 'Moderate',
+          seriousness: 'Moderate',
+          treatment: 'Topical ointments and allergy management',
+          nhsLink: 'https://www.nhs.uk/' 
+        },
         // Add more card objects here
       ],
       selectedCardIndex: -1 // Initialize selected card index to -1 (none selected by default)
@@ -70,6 +139,9 @@ export default {
       this.showUploadModal = false;
       this.message = `You are not healthy!`;
       this.showAlert = true;
+        setTimeout(() => {
+          this.showAlert = false;
+        }, 6000);
       this.selectedCardIndex = 2;
       // Optionally, scroll to the selected card
       this.scrollToCard(this.selectedCardIndex);
@@ -80,7 +152,14 @@ export default {
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
-    }
+    },
+    openModal(card) {
+      this.modalData = card;
+      this.showModal = true;
+    },
+    closeModal() {
+      this.showModal = false;
+    },
   }
 }
 </script>
