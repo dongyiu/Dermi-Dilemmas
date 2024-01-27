@@ -1,13 +1,17 @@
 <template>
-<div style="background: linear-gradient(to bottom right, #a16aa1, #d2d2d2);" class="w-full h-full items-center justify-center bg-white p-2 sortable-item edit-parent-border">
+<div style="background: linear-gradient(to bottom right, #c8017e, #0c0e3f);" class="w-full h-full items-center justify-center bg-white p-2 sortable-item edit-parent-border">
     <main class="editable min-h-screen p-8 sortable-item edit-border" draggable="false" data-sortable-applied="true">
       <!-- Hero Section -->
       <div class="max-w-6xl mx-auto sortable-item">
-        <div class="editable text-center text-black-700 py-20 sortable-item" draggable="false">
-          <h1 class="editable text-6xl font-bold mb-4 sortable-item" draggable="false">Dermi Dilemmas</h1>
-          <p class="editable text-xl mb-5 sortable-item" draggable="false">Detect skin rashes with AI</p>
-          <p class="editable text-sm mb-10 sortable-item" draggable="false">Disclaimer: Please consult a medical professional for a proper diagnosis.</p>
-          <button @click="showUploadModal = true" class="editable px-8 rounded-lg bg-yellow-400 text-gray-800 font-bold p-4 border-yellow-500 border-t border-b border-r sortable-item mt-16 mb-24">Upload Image</button>
+        <div class="w-full md:w-2/3 mx-auto py-12">
+          <div class="px-10">
+            <div class="editable text-center text-black-700 py-5 sortable-item rounded-lg bg-white shadow-lg">
+              <h1 class="editable text-6xl font-bold sortable-item" draggable="false">Dermi-Dilemmas</h1>
+              <p class="editable text-xl mb-5 sortable-item" draggable="false">Detect skin rashes with AI</p>
+              <p class="editable text-sm mb-10 sortable-item" draggable="false">Disclaimer: Please consult a medical professional for a proper diagnosis.</p>
+              <button @click="showUploadModal = true" class="editable px-8 rounded-lg bg-yellow-400 text-gray-800 font-bold p-4 border-yellow-500 border-t border-b border-r sortable-item my-10">Upload Image</button>
+            </div>
+          </div>
         </div>
         
         <!-- Cards Section -->
